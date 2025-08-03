@@ -1,8 +1,9 @@
 import HomeItem from "../components/HomeItem";
 import { useSelector } from "react-redux";
-function Home() {
+
+const Home = () => {
   const items = useSelector((store) => store.items);
-  console.log(items);
+
   return (
     <main>
       <div className="items-container">
@@ -12,5 +13,6 @@ function Home() {
       </div>
     </main>
   );
-}
+};
+
 export default Home;

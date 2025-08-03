@@ -1,34 +1,33 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { itemsActions } from "../store/fetchStatusSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { itemsActions } from "../store/itemsSlice";
+import { fetchStatusActions } from "../store/fetchStatusSlice";
 
-function FetchItems() {
+const FetchItems = () => {
   const fetchStatus = useSelector((store) => store.fetchStatus);
   const dispatch = useDispatch();
-  console.log(fetchStatus);
+
   useEffect(() => {
     if (fetchStatus.fetchDone) return;
-    const controller = new AbartController();
+
+    const controller = new AbortController();
     const signal = controller.signal;
 
+    dispatch(fetchStatusActions.markFetchingStarted());
     fetch("http://localhost:8080/items", { signal })
       .then((res) => res.json())
       .then(({ items }) => {
-        dispatch(itemsActions.markFetchDone());
+        dispatch(fetchStatusActions.markFetchDone());
+        dispatch(fetchStatusActions.markFetchingFinished());
         dispatch(itemsActions.addInitialItems(items[0]));
       });
+
     return () => {
       controller.abort();
     };
   }, [fetchStatus]);
 
-  return (
-    <>
-      <div>
-        fetch Done: {fetchStatus.fetchDone}
-        currently Fetching: {fetchStatus.currentlyFetching}
-      </div>
-    </>
-  );
-}
+  return <></>;
+};
+
 export default FetchItems;
